@@ -66,132 +66,59 @@
     <con:wsrmConfig version="1.2"/>
   </con:call>
   <con:call id="426af482-1752-47e3-b3b5-5ae4dc5625f4" name="Request 2">
-    <con:settings/>
+    <con:settings>
+      <con:setting id="com.eviware.soapui.impl.wsdl.WsdlRequest@request-headers">&lt;xml-fragment/></con:setting>
+    </con:settings>
     <con:encoding>UTF-8</con:encoding>
-    <con:endpoint>http://0.0.0.0:18057/SOAPServiceBinding/BSROS_GenerateQuote_RIN/</con:endpoint>
-    <con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:gen="http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN" xmlns:mes="http://www.theaa.com/CommonServices/Data/Message/MessageHeader.2" xmlns:com="http://www.theaa.com/CommonServices/Data/Common" xmlns:prod="http://www.theaa.com/CommonServices/Data/Product.2" xmlns:mem="http://www.theaa.com/CommonServices/Data/Membership.2">\r
-   <soapenv:Header/>\r
-   <soapenv:Body>\r
-      <gen:GenerateQuoteRequest>\r
-         <mes:RequestHeader>\r
-            <!--Optional:-->\r
-            <com:CorrelationId>?</com:CorrelationId>\r
-            <mes:TransactionId>?</mes:TransactionId>\r
-            <mes:Version>?</mes:Version>\r
-            <mes:RequestDateTime>?</mes:RequestDateTime>\r
-            <mes:Source>\r
-               <mes:Domain>?</mes:Domain>\r
-               <mes:Channel>?</mes:Channel>\r
-               <mes:LineOfBusiness>?</mes:LineOfBusiness>\r
-               <mes:Name>?</mes:Name>\r
-               <!--Optional:-->\r
-               <mes:Address>?</mes:Address>\r
-               <!--Optional:-->\r
-               <mes:InstanceId>?</mes:InstanceId>\r
-               <!--Optional:-->\r
-               <mes:ApplicationVersion>?</mes:ApplicationVersion>\r
-               <!--Optional:-->\r
-               <mes:User>?</mes:User>\r
-            </mes:Source>\r
-            <!--Optional:-->\r
-            <mes:MIContext>?</mes:MIContext>\r
-         </mes:RequestHeader>\r
-         <!--Optional:-->\r
-         <gen:IndicativePriceFlag>?</gen:IndicativePriceFlag>\r
-         <!--Optional:-->\r
-         <gen:OverrideTenureJourney>?</gen:OverrideTenureJourney>\r
-         <!--Optional:-->\r
-         <gen:OverrideTenureReasonCode>?</gen:OverrideTenureReasonCode>\r
-         <!--Optional:-->\r
-         <gen:OverrideTenureReasonDescription>?</gen:OverrideTenureReasonDescription>\r
-         <gen:PaymentType>?</gen:PaymentType>\r
-         <gen:ProductList>\r
-            <prod:EffectivePriceDateTime>?</prod:EffectivePriceDateTime>\r
-            <prod:PolicyStartDateTime>?</prod:PolicyStartDateTime>\r
-            <prod:PolicyEndDateTime>?</prod:PolicyEndDateTime>\r
-            <!--Optional:-->\r
-            <prod:OfferCodeDetailList>\r
-               <!--1 or more repetitions:-->\r
-               <prod:OfferCodeDetail>\r
-                  <prod:OfferCode>?</prod:OfferCode>\r
-                  <prod:OfferCodeApplicationLevel>?</prod:OfferCodeApplicationLevel>\r
-                  <!--Optional:-->\r
-                  <prod:IsPersistent>?</prod:IsPersistent>\r
-               </prod:OfferCodeDetail>\r
-            </prod:OfferCodeDetailList>\r
-            <!--Optional:-->\r
-            <prod:SourceGroup>?</prod:SourceGroup>\r
-            <prod:SourceCode>?</prod:SourceCode>\r
-            <prod:Currency>?</prod:Currency>\r
-            <!--Optional:-->\r
-            <gen:MembershipTenure>?</gen:MembershipTenure>\r
-            <!--Optional:-->\r
-            <gen:ManConYear1>?</gen:ManConYear1>\r
-            <!--Optional:-->\r
-            <prod:AssociatesList>\r
-               <!--1 or more repetitions:-->\r
-               <prod:Associate>\r
-                  <prod:AssociateType>?</prod:AssociateType>\r
-                  <prod:NumberOfFreeAssociates>?</prod:NumberOfFreeAssociates>\r
-                  <prod:RelatedOfferCode>?</prod:RelatedOfferCode>\r
-               </prod:Associate>\r
-            </prod:AssociatesList>\r
-            <!--1 or more repetitions:-->\r
-            <gen:Product>\r
-               <prod:ProductCode>?</prod:ProductCode>\r
-               <!--Optional:-->\r
-               <prod:CoverageList>\r
-                  <!--1 or more repetitions:-->\r
-                  <prod:Coverage>\r
-                     <prod:CoverageCode>?</prod:CoverageCode>\r
-                     <!--Optional:-->\r
-                     <prod:LimitList>\r
-                        <!--1 or more repetitions:-->\r
-                        <prod:Limit>\r
-                           <prod:Type>?</prod:Type>\r
-                           <prod:Value>?</prod:Value>\r
-                        </prod:Limit>\r
-                     </prod:LimitList>\r
-                     <!--Optional:-->\r
-                     <prod:AdditionalData>\r
-                        <prod:Type>?</prod:Type>\r
-                        <prod:Value>?</prod:Value>\r
-                     </prod:AdditionalData>\r
-                  </prod:Coverage>\r
-               </prod:CoverageList>\r
-            </gen:Product>\r
-            <!--Optional:-->\r
-            <gen:VehicleAgeList>\r
-               <!--1 or more repetitions:-->\r
-               <gen:VehicleAge>?</gen:VehicleAge>\r
-            </gen:VehicleAgeList>\r
-            <gen:CoveredPersons>?</gen:CoveredPersons>\r
-            <!--Optional:-->\r
-            <prod:RequestSurchargeAndFeeList>\r
-               <!--1 or more repetitions:-->\r
-               <prod:SurchargeOrFee>\r
-                  <prod:SurchargeRequestType>?</prod:SurchargeRequestType>\r
-                  <prod:IsWaived>?</prod:IsWaived>\r
-                  <prod:WaivedReason>?</prod:WaivedReason>\r
-                  <prod:SurchargeOrFeeCode>?</prod:SurchargeOrFeeCode>\r
-               </prod:SurchargeOrFee>\r
-            </prod:RequestSurchargeAndFeeList>\r
-            <!--Optional:-->\r
-            <prod:AgentDiscountRequestedList>\r
-               <!--1 or more repetitions:-->\r
-               <prod:AgentDiscountRequested>\r
-                  <prod:AgentDiscountCode>?</prod:AgentDiscountCode>\r
-                  <prod:AgentDiscountType>?</prod:AgentDiscountType>\r
-                  <prod:AgentDiscountValue>?</prod:AgentDiscountValue>\r
-               </prod:AgentDiscountRequested>\r
-            </prod:AgentDiscountRequestedList>\r
-         </gen:ProductList>\r
-         <gen:CustomerDetails>\r
-            <gen:Postcode>?</gen:Postcode>\r
-            <mem:MembershipNumber>?</mem:MembershipNumber>\r
-         </gen:CustomerDetails>\r
-      </gen:GenerateQuoteRequest>\r
-   </soapenv:Body>\r
+    <con:endpoint>http://rh0123v:18057/SOAPServiceBinding/BSROS_GenerateQuote_RIN/</con:endpoint>
+    <con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:gen="http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN" xmlns:mes="http://www.theaa.com/CommonServices/Data/Message/MessageHeader.2" xmlns:com="http://www.theaa.com/CommonServices/Data/Common" xmlns:prod="http://www.theaa.com/CommonServices/Data/Product.2" xmlns:mem="http://www.theaa.com/CommonServices/Data/Membership.2">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <gen:GenerateQuoteRequest>
+         <mes:RequestHeader>
+            
+            <mes:TransactionId/>
+            <mes:Version>v1</mes:Version>
+            <mes:RequestDateTime>2020-03-01T00:00:00</mes:RequestDateTime>
+            <mes:Source>
+               <mes:Domain>SALES</mes:Domain>
+               <mes:Channel>SanityTesting</mes:Channel>
+               <mes:LineOfBusiness>ROS</mes:LineOfBusiness>
+               <mes:Name>Pricing Services</mes:Name>
+               <mes:InstanceId>BWEclipseAppNode</mes:InstanceId>
+               <mes:User>PS Testing</mes:User>
+            </mes:Source>
+            <mes:MIContext>context</mes:MIContext>
+         </mes:RequestHeader>
+         <gen:IndicativePriceFlag>false</gen:IndicativePriceFlag>
+         <gen:OverrideTenureReasonCode>false</gen:OverrideTenureReasonCode>
+         <gen:PaymentType>RAP</gen:PaymentType>
+         <gen:ProductList>
+            <prod:EffectivePriceDateTime>2020-03-01T00:00:00</prod:EffectivePriceDateTime>
+            <prod:PolicyStartDateTime>2020-03-01T00:00:00</prod:PolicyStartDateTime>
+            <prod:PolicyEndDateTime>2021-02-28T23:59:00</prod:PolicyEndDateTime>
+            <prod:OfferCodeDetailList>
+               <prod:OfferCodeDetail>
+                  <prod:OfferCode/>
+                  <prod:OfferCodeApplicationLevel>1</prod:OfferCodeApplicationLevel>
+                   <prod:IsPersistent>false</prod:IsPersistent>
+
+               </prod:OfferCodeDetail>
+            </prod:OfferCodeDetailList>
+            <prod:SourceGroup>BC</prod:SourceGroup>
+            <prod:SourceCode>Natural Search</prod:SourceCode>
+            <prod:Currency>GBP</prod:Currency>
+            <gen:MembershipTenure>1</gen:MembershipTenure>
+        <gen:Product><prod:ProductCode>PRD_UK_0001</prod:ProductCode></gen:Product><gen:Product><prod:ProductCode>PRD_UK_0003</prod:ProductCode></gen:Product><gen:Product><prod:ProductCode>PRD_UK_0005</prod:ProductCode></gen:Product><gen:Product><prod:ProductCode>PRD_UK_0018</prod:ProductCode></gen:Product>
+             <gen:VehicleAgeList><gen:VehicleAge>12</gen:VehicleAge><gen:VehicleAge>12</gen:VehicleAge><gen:VehicleAge>13</gen:VehicleAge><gen:VehicleAge>14</gen:VehicleAge></gen:VehicleAgeList>
+            <gen:CoveredPersons>4</gen:CoveredPersons><prod:AgentDiscountRequestedList><prod:AgentDiscountRequested><prod:AgentDiscountCode>123C</prod:AgentDiscountCode><prod:AgentDiscountType>P</prod:AgentDiscountType><prod:AgentDiscountValue>10</prod:AgentDiscountValue></prod:AgentDiscountRequested></prod:AgentDiscountRequestedList>
+         </gen:ProductList>
+         <gen:CustomerDetails>
+            <gen:Postcode>BA2 3RD</gen:Postcode>
+            <mem:MembershipNumber>63560110</mem:MembershipNumber>
+         </gen:CustomerDetails>
+      </gen:GenerateQuoteRequest>
+   </soapenv:Body>
 </soapenv:Envelope>]]></con:request>
     <con:credentials>
       <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>

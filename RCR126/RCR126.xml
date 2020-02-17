@@ -147,100 +147,8 @@ testRunner.testCase.setPropertyValue('payment','RAP');
 testRunner.runTestStep( project.testSuites['RCR126'].testCases['RCR126'].testSteps['Setup_ProductList_XML'] );
 testRunner.runTestStep( project.testSuites['RCR126'].testCases['RCR126'].testSteps['Setup_Cover_Value'] );
 testRunner.runTestStep( project.testSuites['RCR126'].testCases['RCR126'].testSteps['Setup_BRCList_XML'] );
-testRunner.runTestStep( project.testSuites['RCR126'].testCases['RCR126'].testSteps['NB Request'] );
-testRunner.runTestStep( project.testSuites['RCR126'].testCases['RCR126'].testSteps['Setup_New_ProductList_XML'] );
-testRunner.runTestStep( project.testSuites['RCR126'].testCases['RCR126'].testSteps['Setup_NewCover_Value'] );
-testRunner.runTestStep( project.testSuites['RCR126'].testCases['RCR126'].testSteps['Setup_CurrentPolicyPrice'] );
+testRunner.runTestStep( project.testSuites['RCR126'].testCases['RCR126'].testSteps['SetupPayment'] );
 testRunner.runTestStep( project.testSuites['RCR126'].testCases['RCR126'].testSteps['RCR126Quote'] );</script>
-    </con:config>
-  </con:testStep>
-  <con:testStep type="groovy" name="SetupPayment" id="cc67c087-add9-4cd1-9e7f-8e2a8ae9a78c">
-    <con:settings/>
-    <con:config>
-      <script>testRunner.testCase.setPropertyValue( 'ID',  context.expand( '${RCR126All#ID}' ))
-def ID = context.expand( '${RCR126All#ID}' )
-def productType = context.expand( '${RCR126All#PRODUCT_TYPE}' )
-def paymentflag = context.expand( '${RCR126All#PaymentType}' )
-def SAP,RAP,CMM
-log.info(paymentflag  )
-
-if(paymentflag.equals("NYNNN") || paymentflag.equals("YYNNN") || paymentflag.equals("YYYYY"))
-{
-	RAP="Y"
-}
-if(paymentflag.equals("YYNNN") || paymentflag.equals("YYYYY"))
-{
-	SAP="Y"
-}
-if(paymentflag.equals("YYYYY"))
-{
-	CMM="Y"
-	M24="N"
-	CQM="N"
-}
-
-int i = Integer.parseInt(context.expand( '${#TestCase#PaymentNumber}' ))
-
-if(i==1)
-{
-	if(RAP=="Y")
-	{
-		testRunner.testCase.setPropertyValue('payment','RAP');
-		i = i+1;
-		testRunner.testCase.setPropertyValue( 'PaymentNumber',  new Integer(i).toString())
-		log.info(ID+";"+i+"RAP")
-	}
-	else 
-	{
-		log.info("Skip Payment RAP")
-		i = i+1;
-		testRunner.testCase.setPropertyValue('PaymentNumber','1')
-		log.info(ID+";"+i+"RAP")
-		testRunner.gotoStepByName("Payment");
-	}
-}
-else if(i==2)
-{
-	if(SAP=="Y")
-	{
-		testRunner.testCase.setPropertyValue('payment','SAP');
-		i = i+1;
-		testRunner.testCase.setPropertyValue('PaymentNumber',new Integer(i).toString())
-		log.info(ID+";"+i+"SAP")
-	}
-	else
-	{
-		log.info("Skip Payment SAP")
-		i = i+1;
-		testRunner.testCase.setPropertyValue('PaymentNumber',new Integer(i).toString())
-		log.info(ID+";"+i+"SAP")
-		testRunner.gotoStepByName("Payment");
-	}
-}
-else if(i==3)
-{
-	if(CMM=="Y")
-	{
-		testRunner.testCase.setPropertyValue('payment','CMM');
-		i = i+1
-		testRunner.testCase.setPropertyValue('PaymentNumber',new Integer(i).toString())
-		log.info(ID+";"+i+"CMM")
-	}
-	else 
-	{
-		log.info("Skip Payment CMM")
-		testRunner.testCase.setPropertyValue('PaymentNumber','1')
-		log.info(ID+";"+i+"CMM")
-		testRunner.gotoStepByName("Payment");
-		
-	}
-}
-
-else 
-{	
-	testRunner.testCase.setPropertyValue( 'PaymentNumber', '1')
-	testRunner.gotoStepByName("Payment");
-}</script>
     </con:config>
   </con:testStep>
   <con:testStep type="groovy" name="Setup_ProductList_XML" id="3692a15c-3d46-4535-9754-340d3e945bc7">
@@ -360,7 +268,19 @@ if(prodArr.length > 0)
 
 testRunner.testCase.setPropertyValue( "ProductList_XML",  strBld.toString()) //sends nodes in Request
 
-log.info(strBld)]]></script>
+log.info(strBld)
+
+def Offercode = context.expand( '${RCR126All#OFFER_CODE}' )
+if ( Offercode == "AAFRHS" || Offercode == "AAFRRL" || Offercode == "AAFRSM")
+{
+	persistent= "true"
+	testRunner.testCase.setPropertyValue( "Persistent",  persistent.toString())
+}
+else
+{
+	persistent= "false"
+	testRunner.testCase.setPropertyValue( "Persistent",  persistent.toString())
+}]]></script>
     </con:config>
   </con:testStep>
   <con:testStep type="groovy" name="Setup_Cover_Value" id="5810a09c-c2e2-4bd4-96ff-35c493ba6cbc">
@@ -446,6 +366,95 @@ if (BRC.equals("Y"))
 	}]]></script>
     </con:config>
   </con:testStep>
+  <con:testStep type="groovy" name="SetupPayment" id="cc67c087-add9-4cd1-9e7f-8e2a8ae9a78c">
+    <con:settings/>
+    <con:config>
+      <script>testRunner.testCase.setPropertyValue( 'ID',  context.expand( '${RCR126All#ID}' ))
+def ID = context.expand( '${RCR126All#ID}' )
+def productType = context.expand( '${RCR126All#PRODUCT_TYPE}' )
+def paymentflag = context.expand( '${RCR126All#PaymentType}' )
+def SAP,RAP,CMM
+log.info(paymentflag  )
+
+if(paymentflag.equals("NYNNN") || paymentflag.equals("YYNNN") || paymentflag.equals("YYYYY"))
+{
+	RAP="Y"
+}
+if(paymentflag.equals("YYNNN") || paymentflag.equals("YYYYY"))
+{
+	SAP="Y"
+}
+if(paymentflag.equals("YYYYY"))
+{
+	CMM="Y"
+	M24="N"
+	CQM="N"
+}
+
+int i = Integer.parseInt(context.expand( '${#TestCase#PaymentNumber}' ))
+
+if(i==1)
+{
+	if(RAP=="Y")
+	{
+		testRunner.testCase.setPropertyValue('payment','RAP');
+		i = i+1;
+		testRunner.testCase.setPropertyValue( 'PaymentNumber',  new Integer(i).toString())
+		log.info(ID+";"+i+"RAP")
+	}
+	else 
+	{
+		log.info("Skip Payment RAP")
+		i = i+1;
+		testRunner.testCase.setPropertyValue('PaymentNumber','1')
+		log.info(ID+";"+i+"RAP")
+		
+	}
+}
+else if(i==2)
+{
+	if(SAP=="Y")
+	{
+		testRunner.testCase.setPropertyValue('payment','SAP');
+		i = i+1;
+		testRunner.testCase.setPropertyValue('PaymentNumber',new Integer(i).toString())
+		log.info(ID+";"+i+"SAP")
+	}
+	else
+	{
+		log.info("Skip Payment SAP")
+		i = i+1;
+		testRunner.testCase.setPropertyValue('PaymentNumber',new Integer(i).toString())
+		log.info(ID+";"+i+"SAP")
+		
+	}
+}
+else if(i==3)
+{
+	if(CMM=="Y")
+	{
+		testRunner.testCase.setPropertyValue('payment','CMM');
+		i = i+1
+		testRunner.testCase.setPropertyValue('PaymentNumber',new Integer(i).toString())
+		log.info(ID+";"+i+"CMM")
+	}
+	else 
+	{
+		log.info("Skip Payment CMM")
+		testRunner.testCase.setPropertyValue('PaymentNumber','1')
+		log.info(ID+";"+i+"CMM")
+		testRunner.gotoStepByName("DataSource Loop");
+		
+	}
+}
+
+else 
+{	
+	testRunner.testCase.setPropertyValue( 'PaymentNumber', '1')
+	testRunner.gotoStepByName("DataSource Loop");
+}</script>
+    </con:config>
+  </con:testStep>
   <con:testStep type="request" id="4853c49a-40c9-43cb-a779-300277f5c1c4" name="RCR126Quote">
     <con:settings/>
     <con:config xsi:type="con:RequestStep" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
@@ -457,53 +466,52 @@ if (BRC.equals("Y"))
         </con:settings>
         <con:encoding>UTF-8</con:encoding>
         <con:endpoint>http://rh0123v:18057/SOAPServiceBinding/BSROS_GenerateQuote_RIN/</con:endpoint>
-        <con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:gen="http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN" xmlns:mes="http://www.theaa.com/CommonServices/Data/Message/MessageHeader.2" xmlns:com="http://www.theaa.com/CommonServices/Data/Common" xmlns:prod="http://www.theaa.com/CommonServices/Data/Product.2" xmlns:mem="http://www.theaa.com/CommonServices/Data/Membership.2">
-   <soapenv:Header/>
-   <soapenv:Body>
-      <gen:GenerateQuoteRequest>
-         <mes:RequestHeader>
-            
-            <mes:TransactionId/>
-            <mes:Version>v1</mes:Version>
-            <mes:RequestDateTime>${RCR126All#NEWPOLICYSTARTDATE}T00:00:00</mes:RequestDateTime>
-            <mes:Source>
-               <mes:Domain>SALES</mes:Domain>
-               <mes:Channel>SanityTesting</mes:Channel>
-               <mes:LineOfBusiness>ROS</mes:LineOfBusiness>
-               <mes:Name>Pricing Services</mes:Name>
-               <mes:InstanceId>BWEclipseAppNode</mes:InstanceId>
-               <mes:User>PS Testing</mes:User>
-            </mes:Source>
-            <mes:MIContext>context</mes:MIContext>
-         </mes:RequestHeader>
-         <gen:IndicativePriceFlag>false</gen:IndicativePriceFlag>
-         <gen:OverrideTenureReasonCode>false</gen:OverrideTenureReasonCode>
-         <gen:PaymentType>${#TestCase#payment}</gen:PaymentType>
-         <gen:ProductList>
-            <prod:EffectivePriceDateTime>${RCR126All#NEWPOLICYSTARTDATE}T00:00:00</prod:EffectivePriceDateTime>
-            <prod:PolicyStartDateTime>${RCR126All#NEWPOLICYSTARTDATE}T00:00:00</prod:PolicyStartDateTime>
-            <prod:PolicyEndDateTime>${RCR126All#NEWPOLICYENDDATE}T23:59:00</prod:PolicyEndDateTime>
-            <prod:OfferCodeDetailList>
-               <prod:OfferCodeDetail>
-                  <prod:OfferCode>ONLINE</prod:OfferCode>
-                  <prod:OfferCodeApplicationLevel>1</prod:OfferCodeApplicationLevel>
-                   <prod:IsPersistent>false</prod:IsPersistent>
-
-               </prod:OfferCodeDetail>
-            </prod:OfferCodeDetailList>
-            <prod:SourceGroup>BC</prod:SourceGroup>
-            <prod:SourceCode>Natural Search</prod:SourceCode>
-            <prod:Currency>GBP</prod:Currency>
-            <gen:MembershipTenure>1</gen:MembershipTenure>
-        ${#TestCase#ProductList_XML}
-            <gen:CoveredPersons>${#TestCase#Cover}</gen:CoveredPersons>
-         </gen:ProductList>
-         <gen:CustomerDetails>
-            <gen:Postcode>21 7AS</gen:Postcode>
-            <mem:MembershipNumber>63560110</mem:MembershipNumber>
-         </gen:CustomerDetails>
-      </gen:GenerateQuoteRequest>
-   </soapenv:Body>
+        <con:request><![CDATA[<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:gen="http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN" xmlns:mes="http://www.theaa.com/CommonServices/Data/Message/MessageHeader.2" xmlns:com="http://www.theaa.com/CommonServices/Data/Common" xmlns:prod="http://www.theaa.com/CommonServices/Data/Product.2" xmlns:mem="http://www.theaa.com/CommonServices/Data/Membership.2">\r
+   <soapenv:Header/>\r
+   <soapenv:Body>\r
+      <gen:GenerateQuoteRequest>\r
+         <mes:RequestHeader>\r
+            <mes:TransactionId/>\r
+            <mes:Version>v1</mes:Version>\r
+            <mes:RequestDateTime>${RCR126All#NEWPOLICYSTARTDATE}T00:00:00</mes:RequestDateTime>\r
+            <mes:Source>\r
+               <mes:Domain>SALES</mes:Domain>\r
+               <mes:Channel>SanityTesting</mes:Channel>\r
+               <mes:LineOfBusiness>ROS</mes:LineOfBusiness>\r
+               <mes:Name>Pricing Services</mes:Name>\r
+               <mes:InstanceId>BWEclipseAppNode</mes:InstanceId>\r
+               <mes:User>PS Testing</mes:User>\r
+            </mes:Source>\r
+            <mes:MIContext>context</mes:MIContext>\r
+         </mes:RequestHeader>\r
+         <gen:IndicativePriceFlag>false</gen:IndicativePriceFlag>\r
+         <gen:OverrideTenureReasonCode>false</gen:OverrideTenureReasonCode>\r
+         <gen:PaymentType>${#TestCase#payment}</gen:PaymentType>\r
+         <gen:ProductList>\r
+            <prod:EffectivePriceDateTime>${RCR126All#NEWPOLICYSTARTDATE}T00:00:00</prod:EffectivePriceDateTime>\r
+            <prod:PolicyStartDateTime>${RCR126All#NEWPOLICYSTARTDATE}T00:00:00</prod:PolicyStartDateTime>\r
+            <prod:PolicyEndDateTime>${RCR126All#NEWPOLICYENDDATE}T23:59:00</prod:PolicyEndDateTime>\r
+            <prod:OfferCodeDetailList>\r
+               <prod:OfferCodeDetail>\r
+                  <prod:OfferCode>${RCR126All#OFFER_CODE}</prod:OfferCode>\r
+                  <prod:OfferCodeApplicationLevel>1</prod:OfferCodeApplicationLevel>\r
+                  <prod:IsPersistent>${#TestCase#Persistent}</prod:IsPersistent>\r
+               </prod:OfferCodeDetail>\r
+            </prod:OfferCodeDetailList>\r
+            <prod:SourceGroup>BC</prod:SourceGroup>\r
+            <prod:SourceCode>Natural Search</prod:SourceCode>\r
+            <prod:Currency>GBP</prod:Currency>\r
+            <gen:MembershipTenure>1</gen:MembershipTenure>\r
+            ${#TestCase#ProductList_XML}\r
+            ${#TestCase#BRCList_XML}
+            <gen:CoveredPersons>${#TestCase#Cover}</gen:CoveredPersons>\r
+         </gen:ProductList>\r
+         <gen:CustomerDetails>\r
+            <gen:Postcode>${RCR126All#POSTCODE}</gen:Postcode>\r
+            <mem:MembershipNumber>63560110</mem:MembershipNumber>\r
+         </gen:CustomerDetails>\r
+      </gen:GenerateQuoteRequest>\r
+   </soapenv:Body>\r
 </soapenv:Envelope>]]></con:request>
         <con:credentials>
           <con:selectedAuthProfile>No Authorization</con:selectedAuthProfile>
@@ -519,12 +527,12 @@ if (BRC.equals("Y"))
     <con:settings/>
     <con:config>
       <script>now=new java.text.SimpleDateFormat("yyyyMMdd'T'HHmmss").format(new Date())
-def directory = "N:/Systems_development/RIO/Road Renewals/Soap UI/Test Results/RenewalE2E/XML"
+def directory = "N:/Systems_development/RIO/Road Renewals/Soap UI/Test Results/RCR126/XML"
 def scenarioNo = context.expand( '${RCR126All#ID}' )
 def requestFile = new File(directory, "${scenarioNo}_request"+ now +".xml")
-requestFile.append( context.expand('${RenewalE2EQuote#Request}') )
+requestFile.append( context.expand('${RCR126Quote#Request}') )
 def responseFile = new File(directory, "${scenarioNo}_response"+ now +".xml")
-responseFile.append( context.expand('${RenewalE2EQuote#Response}') )</script>
+responseFile.append( context.expand('${RCR126Quote#Response}') )</script>
     </con:config>
   </con:testStep>
   <con:testStep type="groovy" name="Validate 126" id="a83e0ced-7aa4-4520-a5e1-0035b414aa50">
@@ -608,7 +616,7 @@ if(context.expand( '${RCR126All#BRC}' )=="Y")
 	func_Check(productType,product,"BRC",payment,id)
 }		
 
-testRunner.gotoStepByName("Payment");
+testRunner.gotoStepByName("SetupPayment");
 
 def func_Check(productType,product,name,payment,id)
 {
@@ -617,17 +625,17 @@ def func_Check(productType,product,name,payment,id)
 	//Transaction price
 	def Flex = context.expand( '${RCR126Quote#Response#declare namespace tns=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns3=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns:GenerateQuoteResponse[1]/tns3:FlexFactor[1]}' )
 	def RiskIndicator = context.expand( '${RCR126Quote#Response#declare namespace tns=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns3=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns:GenerateQuoteResponse[1]/tns3:CommunityOrRiskIndicator[1]}' )
-	//def response = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';       //ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[1]								/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:NetRate[1]}' )
+	//def response = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[1]								/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:NetRate[1]}' )
 	
-	def CoreNet = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:NetRate[1]}' )
-	def CoreNetTax = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:NetRateTax[1]}' )
-	def CoreComm = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:Commission[1]}' )
-	def CoreCommTax = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:CommissionTax[1]}' )
-	def TaxTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:TaxTotal[1]}' )
-	def CoreTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:Total[1]}' )
-	def AAF = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:ArrangementFee[1]/tns6:Fee[1]}' )
-	def AAFTax = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:ArrangementFee[1]/tns6:FeeTax[1]}' )
-	def AAFTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:ArrangementFee[1]/tns6:Total[1]}' )
+	def CoreNet = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:NetRate[1]}' )
+	def CoreNetTax = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:NetRateTax[1]}' )
+	def CoreComm = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:Commission[1]}' )
+	def CoreCommTax = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:CommissionTax[1]}' )
+	def TaxTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:TaxTotal[1]}' )
+	def CoreTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:CorePrice[1]/tns6:Total[1]}' )
+	def AAF = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:ArrangementFee[1]/tns6:Fee[1]}' )
+	def AAFTax = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:ArrangementFee[1]/tns6:FeeTax[1]}' )
+	def AAFTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:ArrangementFee[1]/tns6:Total[1]}' )
 
 	func_write(payment,"Flex","Flexfactor",Flex)
 	func_write(payment,"Flex","RiskIndicator",RiskIndicator)	
@@ -643,19 +651,19 @@ def func_Check(productType,product,name,payment,id)
 	
 	
 	
-	def CoreDiscTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:CoreDiscountsTotal[1]}' )
-	def CoreDiscTaxTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:CoreDiscountsTaxTotal[1]}' )
-	def CoreCommDiscTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:CoreCommissionDiscountsTotal[1]}' )
-	def CoreNetDiscTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:CoreNetRateDiscountsTotal[1]}' )
-	def AAFGrandDiscTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:ArrangementFeeGrandDiscountsTotal[1]}' )
-	def AAFTaxDiscTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:ArrangementFeeTaxDiscountsTotal[1]}' )
-	def AAFDiscTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:ArrangementFeeDiscountsTotal[1]}' )
-	def ProdRel = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:RelativityPriceFactor[1]}' )
-	def Extrapolation = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:ExtrapolationFactor[1]}' )
-	def ProdAAFTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:ArrangementFeeTotal[1]}' )
-	def ProdTotalLessAAF = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:TotalLessArrangementFeeTotal[1]}' )
-	def ProdTotalLessDisc = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:TotalLessDiscounts[1]}' )
-	def ProdTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:Total[1]}' )
+	def CoreDiscTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:CoreDiscountsTotal[1]}' )
+	def CoreDiscTaxTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:CoreDiscountsTaxTotal[1]}' )
+	def CoreCommDiscTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:CoreCommissionDiscountsTotal[1]}' )
+	def CoreNetDiscTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:CoreNetRateDiscountsTotal[1]}' )
+	def AAFGrandDiscTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:ArrangementFeeGrandDiscountsTotal[1]}' )
+	def AAFTaxDiscTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:ArrangementFeeTaxDiscountsTotal[1]}' )
+	def AAFDiscTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:AccountingTotals[1]/tns6:ArrangementFeeDiscountsTotal[1]}' )
+	def ProdRel = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:RelativityPriceFactor[1]}' )
+	def Extrapolation = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:ExtrapolationFactor[1]}' )
+	def ProdAAFTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:ArrangementFeeTotal[1]}' )
+	def ProdTotalLessAAF = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:TotalLessArrangementFeeTotal[1]}' )
+	def ProdTotalLessDisc = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:TotalLessDiscounts[1]}' )
+	def ProdTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:Total[1]}' )
 
 	
 
@@ -678,22 +686,22 @@ def func_Check(productType,product,name,payment,id)
 	//Transaction Offer validation
 	def OFFER = ""
 	def OLDOFFER = context.expand( '${RCR126All#OFFER_CODE}' )
-	def OfferNode = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OFFER+'"]/tns6:Code[1]}' )
+	def OfferNode = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OFFER+'"]/tns6:Code[1]}' )
 	def Offernet3,OffernetTax3,Offercomm3,OffercommTax3,OfferAAF3,OfferAAFTax3,OfferIFD3,OfferTotal3
 	
 	if (OLDOFFER !="" &amp;&amp; OFFER != OLDOFFER) // if old offer needs to be clawed back
 	{
-		def OldOfferNode = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:Code[1]}' )
+		def OldOfferNode = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:Code[1]}' )
 		if (OldOfferNode !="")
 		{
-			Offernet3 = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:NetRate[1]}' )
-			OffernetTax3 = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:NetRateTax[1]}' )
-			Offercomm3 = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:Commission[1]}' )
-			OffercommTax3 = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:CommissionTax[1]}' )
-			OfferAAF3 = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:ArrangementFee[1]}' )
-			OfferAAFTax3 = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:ArrangementFeeTax[1]}' )
-			OfferIFD3 = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:InternallyFundedDiscount[1]}' )
-			OfferTotal3 = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:Total[1]}' )
+			Offernet3 = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:NetRate[1]}' )
+			OffernetTax3 = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:NetRateTax[1]}' )
+			Offercomm3 = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:Commission[1]}' )
+			OffercommTax3 = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:CommissionTax[1]}' )
+			OfferAAF3 = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:ArrangementFee[1]}' )
+			OfferAAFTax3 = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:ArrangementFeeTax[1]}' )
+			OfferIFD3 = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:InternallyFundedDiscount[1]}' )
+			OfferTotal3 = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:Product[tns6:ProductPriceName ="'+product+'"]/tns6:PriceList[1]/tns6:Price[1]/tns6:PriceBreakdown[1]/tns6:OfferCodeDiscountList[1]/tns6:OfferCodeDiscount[tns6:Code ="'+OLDOFFER+'"]/tns6:Total[1]}' )
 
 			func_write(payment,"Offer,Net",product,Offernet3)
 			func_write(payment,"Offer,NetTax",product,OffernetTax3)
@@ -706,20 +714,20 @@ def func_Check(productType,product,name,payment,id)
 		}
 	}
 
-//Transaction Price Breakdown
-def GrandTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:Total[1]}' )
-def GrandTotalExcDisc = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalExcludingDiscounts[1]}' )
-def DiscTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:DiscountTotal[1]}' )
-def BaseCoverTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:BaseCoverTotal[1]}' )
-def BaseCoverTotalLessDisc = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:BaseCoverTotalLessDiscounts[1]}' )
-def BaseCoverAAFTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:BaseCoverArrangementFeeTotal[1]}' )
-def TotalAAF = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalArrangementFee[1]}' )
-def FeeTotal = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:SurchargeFeeTotal[1]}' )
-def TotalLessTotalAAFAddons = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalLessTotalAAFAndTotalAddons[1]}' )
-def TotalLessFees = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalLessSurchargeFees[1]}' )
-def TotalLessAAF = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalLessArrangementFees[1]}' )
-def TotalIPT = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalIPT[1]}' )
-def TotalVAT = context.expand( '${RenewalE2EQuote#Response#declare namespace tns8=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RNL_2\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns8:GenerateQuoteResponse[1]/tns8:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalVAT[1]}' )
+	//Transaction Price Breakdown
+	def GrandTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:Total[1]}' )
+	def GrandTotalExcDisc = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalExcludingDiscounts[1]}' )
+	def DiscTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:DiscountTotal[1]}' )
+	def BaseCoverTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:BaseCoverTotal[1]}' )
+	def BaseCoverTotalLessDisc = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:BaseCoverTotalLessDiscounts[1]}' )
+	def BaseCoverAAFTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:BaseCoverArrangementFeeTotal[1]}' )
+	def TotalAAF = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalArrangementFee[1]}' )
+	def FeeTotal = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:SurchargeFeeTotal[1]}' )
+	def TotalLessTotalAAFAddons = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalLessTotalAAFAndTotalAddons[1]}' )
+	def TotalLessFees = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalLessSurchargeFees[1]}' )
+	def TotalLessAAF = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalLessArrangementFees[1]}' )
+	def TotalIPT = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalIPT[1]}' )
+	def TotalVAT = context.expand( '${RCR126Quote#Response#declare namespace ns0=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns6=\'http://www.theaa.com/CommonServices/Data/Product.2\';//ns0:GenerateQuoteResponse[1]/ ns0:ProductList[1]/tns6:Payment[1]/tns6:TotalPriceBreakdown[1]/tns6:TotalVAT[1]}' )
 
 
 	func_write(payment,"TotalPriceBreakdown,CombinedTotal","",GrandTotal)
@@ -735,6 +743,13 @@ def TotalVAT = context.expand( '${RenewalE2EQuote#Response#declare namespace tns
 	func_write(payment,"TotalPriceBreakdown,TotalLessAAF","",TotalLessAAF)
 	func_write(payment,"TotalPriceBreakdown,TotalVAT","",TotalVAT)
 	func_write(payment,"TotalPriceBreakdown,TotalIPT","",TotalIPT)
+
+
+	def Delta = context.expand( '${RCR126Quote#Response#declare namespace tns5=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns1=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns5:GenerateQuoteResponse[1]/tns5:AverageQuotedRenewalDetailsList[1]/tns1:AverageQuotedRenewalDetails[1]/tns1:AmountDeltaOnRenewalPrice[1]}' )
+	def RenewalPrice = context.expand( '${RCR126Quote#Response#declare namespace tns5=\'http://www.theaa.com/CommonServices/Message/BS/Road/GenerateQuote_RIN\'; declare namespace tns1=\'http://www.theaa.com/CommonServices/Data/Product.2\'; //tns5:GenerateQuoteResponse[1]/tns5:AverageQuotedRenewalDetailsList[1]/tns1:AverageQuotedRenewalDetails[1]/tns1:RenewalPrice[1]}' )
+	func_write(payment,"AQRP,RenewalPrice","",RenewalPrice)
+	func_write(payment,"AQRP,AmountDeltaOnRenewalPrice","",Delta)
+
 }
 
 
@@ -791,7 +806,7 @@ def func_write (payment,element,name,RadarValue)
     <con:settings/>
     <con:config>
       <dataSourceStep>RCR126All</dataSourceStep>
-      <targetStep>SetupPayment</targetStep>
+      <targetStep>Setup_ProductList_XML</targetStep>
       <discardResults>false</discardResults>
     </con:config>
   </con:testStep>
@@ -820,27 +835,27 @@ bw.close();</script>
   <con:properties>
     <con:property>
       <con:name>TotalOfValuesChecked</con:name>
-      <con:value>0</con:value>
+      <con:value>86609</con:value>
     </con:property>
     <con:property>
       <con:name>NumOfIterations</con:name>
-      <con:value>0</con:value>
+      <con:value>831</con:value>
     </con:property>
     <con:property>
       <con:name>PaymentNumber</con:name>
-      <con:value>2</con:value>
+      <con:value>3</con:value>
     </con:property>
     <con:property>
       <con:name>File</con:name>
-      <con:value>N:/Systems_development/RIO/Road Renewals/Soap UI/Test Results/RCR126/RenewalE2Eresults20200212T131758.txt</con:value>
+      <con:value>N:/Systems_development/RIO/Road Renewals/Soap UI/Test Results/RCR126/RenewalE2Eresults20200217T114332.txt</con:value>
     </con:property>
     <con:property>
       <con:name>ID</con:name>
-      <con:value>10</con:value>
+      <con:value>292</con:value>
     </con:property>
     <con:property>
       <con:name>payment</con:name>
-      <con:value>RAP</con:value>
+      <con:value>SAP</con:value>
     </con:property>
     <con:property>
       <con:name>ProductList_XML</con:name>
@@ -852,7 +867,11 @@ bw.close();</script>
     </con:property>
     <con:property>
       <con:name>Cover</con:name>
-      <con:value>4</con:value>
+      <con:value>2</con:value>
+    </con:property>
+    <con:property>
+      <con:name>Persistent</con:name>
+      <con:value>false</con:value>
     </con:property>
   </con:properties>
   <con:reportParameters/>
